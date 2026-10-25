@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel × AI 对照卡 · 64张实用卡片</title>
+<style>
+  :root{
+    --bg:#f6f3ee;
+    --paper:#ffffff;
+    --ink:#191817;
+    --sub:#6b6560;
+    --blue:#1d4ed8;
+    --blue-deep:#1e3a8a;
+    --blue-soft:#e8efff;
+    --red:#d93025;
+    --red-soft:#fdeceb;
+    --line:#e5e0d8;
+    --amber:#b45309;
+    --amber-soft:#fdf3e0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 22px 80px}
+
+  /* header */
+  header{text-align:center;margin-bottom:34px}
+  .brand{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.5px}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+  h1{font-size:clamp(28px,4.5vw,46px);font-weight:900;letter-spacing:-1px;margin:16px 0 6px}
+  h1 .x{color:var(--red)}
+  .sub{color:var(--sub);font-size:16px;max-width:640px;margin:0 auto}
+  .stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:22px}
+  .stat{background:var(--paper);border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+    padding:10px 18px;border-radius:12px;font-size:14px;font-weight:700}
+  .stat b{color:var(--blue-deep);font-size:20px;margin-right:4px}
+
+  /* risk notice */
+  .risk-notice{background:var(--amber-soft);border:2px solid var(--amber);border-radius:12px;
+    padding:18px 20px;margin-bottom:16px;break-inside:avoid}
+  .risk-notice h2{font-size:15px;font-weight:800;color:var(--amber);margin-bottom:10px}
+  .risk-notice ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px;
+    padding-left:18px;font-size:12.5px;line-height:1.7;color:#67501a}
+  .risk-notice li{overflow-wrap:anywhere}
+  .risk-notice strong{font-weight:800}
+
+  /* toolbar */
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:14px 0 10px;margin-bottom:6px}
+  .search{width:100%;max-width:480px;margin:0 auto 14px;display:block;padding:12px 16px;
+    border:2px solid var(--ink);border-radius:12px;font-size:15px;background:var(--paper);
+    box-shadow:3px 3px 0 rgba(25,24,23,.12);outline:none}
+  .search:focus{border-color:var(--blue);box-shadow:3px 3px 0 rgba(29,78,216,.25)}
+  .cats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .cat{border:2px solid var(--line);background:var(--paper);color:var(--sub);
+    padding:7px 14px;border-radius:999px;font-size:13.5px;font-weight:600;cursor:pointer;
+    transition:.15s;white-space:nowrap}
+  .cat:hover{border-color:var(--blue);color:var(--blue)}
+  .cat.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .count-hint{text-align:center;color:var(--sub);font-size:13px;margin:12px 0 18px}
+
+  /* grid */
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+  .card{background:var(--paper);border:2px solid var(--ink);border-radius:16px;
+    box-shadow:6px 6px 0 rgba(25,24,23,.9);overflow:hidden;display:flex;flex-direction:column;
+    min-height:360px;break-inside:avoid}
+  .card-head{display:flex;align-items:center;gap:10px;padding:14px 16px 0}
+  .num{font-size:12px;font-weight:800;color:#fff;background:var(--ink);
+    width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none}
+  .tag{font-size:11.5px;font-weight:700;color:var(--blue-deep);background:var(--blue-soft);
+    padding:3px 9px;border-radius:6px;flex:none}
+  .card-title{font-size:16.5px;font-weight:800;padding:10px 16px 2px;line-height:1.4}
+
+  .old-panel{padding:12px 16px 14px;margin-top:12px;background:#f7f6f3;border-top:2px solid var(--line);border-bottom:1px solid var(--line)}
+  .old-panel .col-label{margin-bottom:5px}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);flex:1}
+  .col{padding:12px 14px}
+  .col + .col{border-left:2px dashed var(--line)}
+  .col-label{font-size:11px;font-weight:800;letter-spacing:.5px;display:flex;align-items:center;gap:5px;margin-bottom:7px}
+  .col-label.old{color:var(--sub)}
+  .col-label.ai{color:var(--blue-deep)}
+  .col-label .ic{width:16px;height:16px;border-radius:5px;display:inline-grid;place-items:center;font-size:10px}
+  .ic.old{background:var(--red-soft);color:var(--red)}
+  .ic.ai{background:var(--blue-soft);color:var(--blue-deep)}
+  .old-txt{font-size:13px;color:var(--sub);line-height:1.55}
+  .prompt{font-size:12.5px;background:var(--blue-soft);border:1.5px solid #c7d7fe;
+    border-radius:10px;padding:9px 11px;color:#1e2a4a;line-height:1.55;margin-bottom:8px}
+  .formula{position:relative;font-family:"SFMono-Regular","Consolas","Menlo",monospace;
+    font-size:12px;background:#101623;color:#e6edf7;border-radius:10px;padding:10px 34px 10px 11px;
+    line-height:1.5;white-space:pre-wrap;word-break:break-all}
+  .note{font-size:11.5px;color:#67501a;background:var(--amber-soft);border-left:3px solid var(--amber);
+    border-radius:0 7px 7px 0;padding:7px 9px;line-height:1.5;margin-top:8px}
+  .copy{position:absolute;top:8px;right:8px;width:22px;height:22px;border:none;border-radius:6px;
+    background:#26334d;color:#c9d7ef;cursor:pointer;font-size:12px;line-height:1;display:grid;place-items:center}
+  .copy:hover{background:var(--blue)}
+  .copy.done{background:#1a7f4b;color:#fff}
+  footer{text-align:center;color:var(--sub);font-size:12.5px;margin-top:44px;line-height:1.8}
+
+  @media(max-width:760px){
+    .risk-notice{padding:15px 16px}
+    .risk-notice ul{grid-template-columns:1fr}
+    .grid{grid-template-columns:1fr}
+    .card{min-height:0}
+    .row{grid-template-columns:1fr}
+    .col + .col{border-left:none;border-top:2px dashed var(--line)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot"></span>财务人 AI 提效 · 工作底稿</div>
+    <h1>Excel <span class="x">×</span> AI 对照卡</h1>
+    <p class="sub">64 个 Excel 高频表格需求——包含可复制的 AI 提示词、公式 / 操作步骤与使用要点。</p>
+    <div class="stats">
+      <div class="stat"><b>64</b>张实用卡片</div>
+      <div class="stat"><b>9</b>大分类</div>
+    <div class="stat"><b>公式 +</b>操作步骤</div>
+    </div>
+  </header>
+
+  <aside class="risk-notice" aria-labelledby="risk-title">
+    <h2 id="risk-title">使用风险提示</h2>
+    <ul>
+      <li><strong>AI 输出需要人工复核：</strong>提示词生成的公式、分析和操作步骤可能出错；结果看起来合理，也应与原始数据和已知结果交叉核对，不能直接作为记账、申报或付款依据。</li>
+      <li><strong>敏感资料先脱敏：</strong>向 AI 上传前，删除或替换身份证号、银行卡号、工资、客户信息及未公开财务数据；确认所用工具符合单位的数据管理要求。</li>
+      <li><strong>公式与自动化先试跑：</strong>核对 Excel / WPS 版本、引用范围、日期和数值格式，测试空值、零值与重复项；批量修改前备份原表，AI 生成的宏或脚本须审查后在副本中运行。</li>
+      <li><strong>财税口径以有效规定为准：</strong>示例税率、扣缴比例、计提参数及核算方法不一定适用于你的地区、期间或企业；请按业务实际、现行规定及企业制度确认，必要时请专业人员复核。</li>
+    </ul>
+  </aside>
+
+  <div class="toolbar">
+    <input class="search" id="search" type="text" placeholder="搜索需求 / 公式关键字，如：账龄、个税、VLOOKUP…">
+    <div class="cats" id="cats"></div>
+    <div class="count-hint" id="hint"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    提示词通用于 ChatGPT / DeepSeek / 豆包 / Kimi / 通义千问 等；公式兼容 Excel 2019+ 与 WPS（标注版本的除外）。<br>
+    先核对列位、期间、单位、正负号和空值规则，再复制公式；建议先用已知结果的几行数据验算后再全量套用。<br>
+    涉及税务、工资、坏账比例及会计政策的内容均为工作模板，实际口径请按企业制度与申报期有效政策复核。
+  </footer>
+</div>
+
+<script>
+const CATS = ["数据整理","核算记账","费用报销","应收应付","薪酬个税","财务报表","预算预测","税务处理","图表可视化"];
+
+const DATA = [
+// ─── 数据整理 ───
+{c:"数据整理",t:"客户名单去重",o:"条件格式标红 → 肉眼逐行看 → 手动删，几百行删半天还漏。",
+ p:"A列是客户名单（从A2开始），按完全相同文本标记重复项，第一次出现不标；忽略空白行，并说明是否区分全半角、空格和大小写。",
+ r:"=IF(A2=\"\",\"\",IF(COUNTIF($A$2:A2,A2)>1,\"重复\",\"\"))\n向下填充。COUNTIF 对字母大小写不敏感；名称前后空格、全半角差异仍可能被当作不同值。需要标准化时先用 TRIM / CLEAN 清洗。"},
+{c:"数据整理",t:"多条件金额匹配",o:"先筛部门、再筛月份、再肉眼找金额，三条件一筛就乱。",
+ p:"明细表里按「部门 + 月份」两个条件汇总对应金额，用一条公式搞定。",
+ r:"=SUMIFS(C:C,A:A,G2,B:B,H2)\n（C列金额 / A列部门 / B列月份）"},
+{c:"数据整理",t:"文本数字转真数字",o:"逐个删前面的空格和单引号，或用分列一个个处理。",
+ p:"A列数字都是文本格式（左上角有绿三角），怎么批量转成能计算的数值？",
+ r:"=VALUE(A2)\n或 =A2*1\n再下拉填充"},
+{c:"数据整理",t:"拆分合并内容",o:"数据 → 分列 → 选分隔符 → 一路下一步，每次都要重做。",
+ p:"把「张三-财务部」这种内容按「-」拆成两列。",
+ r:"=TEXTSPLIT(A2,\"-\")\n（Excel 365 / WPS 新版）\n旧版用分列：数据→分列→分隔符"},
+{c:"数据整理",t:"身份证提取出生日期",o:"手写 MID 函数拼，或一个个抄。",
+ p:"A2为18位身份证文本，先校验长度，再提取第7-14位出生日期并显示为 yyyy-mm-dd；无效或空值返回提示，不要把证件号转成数值。",
+ r:"=IF(A2=\"\",\"\",IF(LEN(A2)=18,TEXT(DATE(VALUE(MID(A2,7,4)),VALUE(MID(A2,11,2)),VALUE(MID(A2,13,2))),\"yyyy-mm-dd\"),\"证件号长度异常\"))",
+ n:"将证件号列预先设为文本，避免末位X或前导字符丢失。此公式仅提取并格式化日期片段，不验证校验码或证件真伪。"},
+{c:"数据整理",t:"金额转人民币大写",o:"对照大写表手抄，或去网上复制一大段宏。",
+ p:"A2为非负人民币金额，最多两位小数。请给出适用于当前Excel版本的金额大写方案，并处理零元、整数、角分为零、跨位补零及负数，不要只拼接数字字符。",
+ r:"金额大写涉及位值进退、零补位和舍入，普通 TEXT([DBNum2]) 拼接不能覆盖所有凭证场景。建议使用已审验的 VBA/LAMBDA 函数；部署前用 0、0.01、10.05、1001.10、999999.99、负数等边界值逐项核对。"},
+{c:"数据整理",t:"四舍五入到分",o:"靠单元格格式显示两位，其实没真舍，汇总总有尾差。",
+ p:"金额四舍五入保留两位小数，让汇总不再出现尾差。",
+ r:"=ROUND(A2,2)"},
+{c:"数据整理",t:"快速智能填充",o:"日期、邮箱格式一行行手动敲。",
+ p:"A列是「2024年1月15日」，帮我在B列统一成 2024-01-15，用快速填充。",
+ r:"方法：B2 手输一个示例「2024-01-15」\n→ 选中 B2:B 区域 → 按 Ctrl+E"},
+{c:"数据整理",t:"多表合并汇总",o:"一个个复制粘贴到一张表，再手动对行列。",
+ p:"12个月的费用表（结构相同），帮我合并到一张表并按部门汇总。",
+ r:"方法：数据 → 获取数据 → 从文件夹\n或用 =VSTACK(表1,表2,表3)（365）\n汇总用 =SUMIF"},
+{c:"数据整理",t:"模糊查找匹配",o:"VLOOKUP 只能精确匹配，名字对不上就 N/A。",
+ p:"A2是客户简称，D列为客户全称、E列为金额。按包含关系匹配并返回金额；若有多个匹配项，列出候选而非任取第一条，同时处理空简称和未匹配。",
+ r:"=IF(A2=\"\",\"\",XLOOKUP(\"*\"&A2&\"*\",D2:D100,E2:E100,\"未匹配\",2))\nXLOOKUP 的 match_mode=2 支持通配符（Microsoft 365 / Excel 2021+）。多条包含匹配时仍只返回首条；正式主数据建议用客户编码精确匹配。"},
+
+// ─── 核算记账 ───
+{c:"核算记账",t:"按科目汇总发生额",o:"数据透视表，或 SUMIF 一个个科目填。",
+ p:"按科目代码，汇总借方金额和贷方金额各是多少。",
+ r:"=SUMIF($A:$A,E2,$C:$C)\n（A科目列 / E科目 / C金额列）"},
+{c:"核算记账",t:"期间科目发生额汇总",o:"筛日期、筛科目，再分别加总借贷方。",
+ p:"明细表A列为科目代码、B列为凭证日期、C列借方、D列贷方；E2为科目代码，H1为期间内任意日期。分别计算该科目所在月份的借方和贷方发生额，日期边界要包含整月。",
+ r:"借方：=SUMIFS($C$2:$C$1000,$A$2:$A$1000,$E2,$B$2:$B$1000,\">=\"&EOMONTH($H$1,-1)+1,$B$2:$B$1000,\"<\"&EOMONTH($H$1,0)+1)\n贷方：将公式中的C列改为D列。",
+ n:"H1须为有效日期；如果期间不是自然月，请改用单独的起止日期单元格。金额列应为数值，日期列不要存成无法识别的文本。"},
+{c:"核算记账",t:"借贷平衡校验",o:"加总两列后肉眼比对，或相减看差额。",
+ p:"检查借方合计是否等于贷方合计，不平就在一个单元格里提示差额。",
+ r:"=IF(SUM(D:D)=SUM(E:E),\"借贷平衡\",\"不平！差额=\"&ABS(SUM(D:D)-SUM(E:E)))"},
+{c:"核算记账",t:"自动生成凭证号",o:"手动递增编号 记-001、记-002…月底手都酸。",
+ p:"A列是凭证日期，按日期月份分组连续编号，格式如 2026-01-记-001；插入、删除和排序后编号规则要明确。给出公式方案并说明其局限。",
+ r:"若只需按当前行显示序号：=TEXT(A2,\"yyyy-mm\")&\"-记-\"&TEXT(COUNTIFS($A$2:A2,\">=\"&EOMONTH(A2,-1)+1,$A$2:A2,\"<=\"&EOMONTH(A2,0)),\"000\")\n这是随行位置重算的展示编号；排序/插行会改变编号，不适合作为不可变的正式凭证号。正式编号应由财务系统按期间锁定生成。"},
+{c:"核算记账",t:"损益结转分录",o:"收入、成本、费用各加总一遍，再手工做一张结转凭证。",
+ p:"帮我生成月末损益结转模板：收入类科目合计转「本年利润」贷方，费用类转借方。",
+ r:"方法：先 SUMIF 按科目类型汇总\n贷方=收入类合计 → 本年利润\n借方=成本费用类合计 → 本年利润"},
+{c:"核算记账",t:"科目余额表",o:"透视表 + 手动加期初、期末两列。",
+ p:"明细按科目代码、借方、贷方记录。按科目汇总本期借贷发生额，并根据科目余额方向计算期末借/贷余额；保留期初余额，不要把所有科目都按借方余额计算。",
+ r:"借方余额科目：期末借方余额=期初借方余额+本期借方发生-本期贷方发生\n贷方余额科目：期末贷方余额=期初贷方余额+本期贷方发生-本期借方发生\n发生额示例：=SUMIFS(借方列,科目代码列,$A2,日期列,\">=\"&起始日,日期列,\"<=\"&截止日)\n资产/费用通常借方余额，负债/权益/收入通常贷方余额； contra 科目及特殊业务按科目性质和企业口径判断。"},
+{c:"核算记账",t:"往来单位对账",o:"按客户/供应商一个个筛选、复制、粘贴。",
+ p:"按客户名筛选出所有未结清明细，汇总成该客户的对账单。",
+ r:"方法：筛选该客户 → 用 =SUMIFS(金额,客户列,客户,状态列,\"未结\") 汇总"},
+{c:"核算记账",t:"试算平衡表",o:"手工把科目余额抄进试算平衡表再对平。",
+ p:"根据科目余额表自动生成试算平衡表，借贷不等标红。",
+ r:"方法：=SUMIF 取各科目余额填入左右栏\n校验 =IF(SUM(借)=SUM(贷),\"平\",\"不平\")"},
+{c:"核算记账",t:"银行对账勾对",o:"银行流水和账面逐笔肉眼勾对。",
+ p:"银行流水与账面数据分别含日期、金额、摘要、对方户名。先规范日期和金额，再按金额+日期初筛；标记一对一已匹配、重复候选和待人工核查，并输出双方未达清单。",
+ r:"=COUNTIFS(账面日期列,A2,账面金额列,B2)\n结果大于0表示找到同日同额候选；结果为0表示未找到候选。",
+ n:"同日同额不等于唯一匹配。拆分/合并付款、手续费、跨日入账应按流水号、摘要和对方户名复核；保留双方未达清单、原因和必要的调整分录。"},
+{c:"核算记账",t:"银行流水重复项识别",o:"按日期、金额筛一遍，再逐笔看流水是否重复。",
+ p:"流水明细A列为日期、B列为金额、C列为对方户名；标记日期、金额、对方户名完全相同的重复候选。",
+ r:"=IF(COUNTIFS($A$2:$A$1000,A2,$B$2:$B$1000,B2,$C$2:$C$1000,C2)>1,\"重复候选\",\"\")",
+ n:"相同日期、金额和对方户名仍可能是合法的多笔交易；此公式只做筛查，不可据此自动删除。可增加银行流水号等字段提高识别准确度。"},
+{c:"核算记账",t:"凭证号重复校验",o:"凭证导出后肉眼检查编号有没有重复。",
+ p:"A列为凭证号，从A2开始，标记重复凭证号，并让空白行保持空白。",
+ r:"=IF(A2=\"\",\"\",IF(COUNTIF($A$2:$A$1000,A2)>1,\"重复\",\"\"))",
+ n:"凭证号应按适用期间和编号规则判断；若不同账套或期间允许相同编号，应把账套、期间等字段一并纳入重复判断。"},
+{c:"核算记账",t:"固定资产折旧",o:"按直线法手算每月折旧，资产一多就乱。",
+ p:"按直线法算每月折旧额：原值、残值率、使用年限。",
+ r:"=SLN(原值,原值*残值率,使用月数)\n或 =（原值-残值）/使用月数"},
+{c:"核算记账",t:"成本分摊",o:"按比例手算再分配，易算错。",
+ p:"把一笔共同费用按各部门人数占比分摊到各部门。",
+ r:"=总费用 * 部门人数 / SUM(全部人数)"},
+
+// ─── 费用报销 ───
+{c:"费用报销",t:"费用占比分析",o:"计算器一个个除，再手填百分比。",
+ p:"算每类费用占费用总额的百分比，做成一个占比列。",
+ r:"=B2/SUM($B$2:$B$10)"},
+{c:"费用报销",t:"差旅费超标提醒",o:"拿住宿标准逐条肉眼比对。",
+ p:"住宿费超过 300 元/晚标准就提示「超标」，否则留空。",
+ r:"=IF(B2>300,\"超标\",\"\")"},
+{c:"费用报销",t:"报销金额校验",o:"拿发票逐张对报销单。",
+ p:"报销金额大于发票金额就提示「异常」，用于报销单复核。",
+ r:"=IF(B2>C2,\"异常：超\"&B2-C2,\"正常\")"},
+{c:"费用报销",t:"费用同比环比",o:"手动减、手动除，再手填百分比。",
+ p:"算本月费用较上月（环比）、较去年同月（同比）的增减百分比。",
+ r:"环比 =(B2-C2)/C2\n同比 =(B2-D2)/D2"},
+{c:"费用报销",t:"费用报销台账",o:"手工登记报销明细，月底翻台账汇总。",
+ p:"帮我搭一个费用报销台账：日期、部门、费用类型、金额、报销人，按月汇总。",
+ r:"方法：建台账表 → =SUMIFS(金额,月份列,月份,费用类型列,类型) 汇总"},
+{c:"费用报销",t:"费用同比分析",o:"手工筛出本月和去年同月，再计算增长率。",
+ p:"费用明细A列为日期、B列为费用类别、C列为金额；E1为本月任意日期，G2为费用类别。计算本月金额相对去年同月的同比变化率。",
+ r:"=IFERROR(SUMIFS($C$2:$C$1000,$A$2:$A$1000,\">=\"&EOMONTH($E$1,-1)+1,$A$2:$A$1000,\"<\"&EOMONTH($E$1,0)+1,$B$2:$B$1000,$G2)/SUMIFS($C$2:$C$1000,$A$2:$A$1000,\">=\"&EOMONTH($E$1,-13)+1,$A$2:$A$1000,\"<\"&EOMONTH($E$1,-12)+1,$B$2:$B$1000,$G2)-1,\"\")",
+ n:"将单元格设为百分比；去年同期金额为0或没有数据时返回空白，需单独检查是新增费用还是数据缺失。该示例按自然月和费用类别统计。"},
+
+// ─── 应收应付 ───
+{c:"应收应付",t:"账龄区间划分",o:"算天数再肉眼分档。",
+ p:"按应收款账龄分档：0-30、31-60、61-90、90 天以上。",
+ r:"=IF(D2<=30,\"0-30天\",IF(D2<=60,\"31-60天\",IF(D2<=90,\"61-90天\",\"90天以上\")))"},
+{c:"应收应付",t:"应收账龄计算（基准日）",o:"每次报表都用 TODAY() 算一次，历史账龄无法复现。",
+ p:"A列为到期日、B列为未收余额，H1为指定的报表基准日。计算逾期天数：未到期显示0，已结清或无到期日留空。",
+ r:"=IF(OR(A2=\"\",B2<=0),\"\",MAX(0,$H$1-A2))",
+ n:"使用固定基准日可重现历史账龄；如果企业按开票日而非到期日计算账龄，应替换日期字段。请确认余额已扣除部分回款和贷项调整。"},
+{c:"应收应付",t:"逾期天数计算",o:"翻日历数日子。",
+ p:"算每笔应收款到今天为止逾期了多少天，没逾期显示 0。",
+ r:"=MAX(0,TODAY()-A2)\n（A2 为到期日）"},
+{c:"应收应付",t:"应付款到期提醒",o:"手动记本子上、标日历。",
+ p:"未来 7 天内到期的应付账款高亮提示，并标注剩余天数。",
+ r:"=IF(AND(A2>=TODAY(),A2<=TODAY()+7),A2-TODAY()&\"天后到期\",\"\")"},
+{c:"应收应付",t:"坏账计提",o:"按账龄段一个个乘比例再加总。",
+ p:"仅作为演示：按公司已批准的账龄组合计提矩阵计算预期信用损失。请将各区间起止天数、计提比例作为可维护参数表，注明账龄按合同到期日还是逾期日计算。",
+ r:"假设A2=账龄天数、B2=余额，H2:H5放区间下限（升序，如0、31、61、91），I2:I5放对应比例：\n=B2*XLOOKUP(A2,$H$2:$H$5,$I$2:$I$5,, -1)",
+ n:"示例比例不是会计准则规定值。计提矩阵、单项评估、前瞻性调整及核销政策须按企业会计政策和审计要求确定；XLOOKUP 需 Microsoft 365 / Excel 2021+。"},
+{c:"应收应付",t:"应收周转天数",o:"手算周转率再倒推天数。",
+ p:"算应收账款周转天数：360 / (营业收入 / 平均应收账款)。",
+ r:"=360/(营业收入/AVERAGE(期初应收,期末应收))"},
+{c:"应收应付",t:"客户回款跟踪",o:"手工标哪些客户还没回款。",
+ p:"按客户列回款情况，未回款且超期的自动标红。",
+ r:"方法：=IF(AND(回款=0,TODAY()>到期日),\"逾期未回款\",\"\") → 条件格式标红"},
+{c:"应收应付",t:"回款率按客户汇总",o:"逐个客户统计已回款金额，再除以应收金额。",
+ p:"应收明细A列为客户、C列为应收金额、D列为已回款金额，G2为待汇总客户。计算客户回款率，分母为该客户应收金额合计。",
+ r:"=IFERROR(SUMIFS($D$2:$D$1000,$A$2:$A$1000,$G2)/SUMIFS($C$2:$C$1000,$A$2:$A$1000,$G2),0)",
+ n:"将结果设置为百分比。该口径是累计回款金额/应收金额；如需按期间或到期批次分析，应在 SUMIFS 中加入对应日期/单据条件。"},
+{c:"应收应付",t:"应付余额滚动核对",o:"期初余额加本期新增，再扣付款和核销，逐家手工计算。",
+ p:"B2为期初应付，C2为本期新增应付，D2为本期已付款，E2为本期核销或调整，计算期末应付余额。",
+ r:"=B2+C2-D2-E2",
+ n:"先统一正负号和统计期间；预付款、汇兑差额、重分类等项目需按企业台账口径纳入，不能只依赖此简化滚动式。"},
+
+// ─── 薪酬个税 ───
+{c:"薪酬个税",t:"个税计算（累计预扣）",o:"翻税率表手算，累死还容易错。",
+ p:"按居民个人工资薪金累计预扣法搭建计算模板。输入本年截至本月累计收入、累计减除费用、累计专项扣除、专项附加扣除及其他依法扣除，并减去累计已预扣税额；税率表单独维护，公式须能处理负数应纳税所得额与累计应退/补预扣。",
+ r:"累计应纳税所得额=累计收入-累计减除费用-累计专项扣除-累计专项附加扣除-累计其他扣除\n本期预扣税额=MAX(累计应纳税所得额×适用预扣率-速算扣除数-累计已预扣税额,0)",
+ n:"需按累计应纳税所得额查找适用预扣率和速算扣除数。原大括号数组写法不能自动按门槛选档，且缺少累计已预扣税额；请按现行税率表和个税客户端逐月核验。"},
+{c:"薪酬个税",t:"五险一金个人扣缴",o:"按比例一个个手算。",
+ p:"按基数算个人五险一金（养老8%+医疗2%+失业0.5%+公积金12%）。",
+ r:"=基数*(8%+2%+0.5%+12%)"},
+{c:"薪酬个税",t:"实发工资",o:"应发-社保-公积金-个税-其他，手减。",
+ p:"实发工资 = 应发 - 五险一金 - 个税 - 其他扣款，写公式。",
+ r:"=B2-C2-D2-E2"},
+{c:"薪酬个税",t:"工资条批量拆分",o:"每行下面插两空行再复制表头，100人插到崩溃。",
+ p:"把工资总表变成每人一条、中间隔空行的工资条格式。",
+ r:"方法：加辅助列标序号 → 排序展开 → 复制表头\n或直接让 AI 写一个拆分宏"},
+{c:"薪酬个税",t:"迟到早退扣款",o:"数迟到次数 × 金额，手算。",
+ p:"按考勤表迟到次数扣款，每次 50 元，算出每人应扣。",
+ r:"=COUNTIF(考勤范围,\"迟到\")*50"},
+
+// ─── 财务报表 ───
+{c:"财务报表",t:"资产负债表勾稽",o:"人工核对资产 = 负债 + 权益。",
+ p:"检查资产负债表是否勾稽：资产合计应=负债+所有者权益合计，不平提示。",
+ r:"=IF(资产合计=负债合计+权益合计,\"勾稽平衡\",\"不平，差额\"&(资产合计-(负债合计+权益合计)))"},
+{c:"财务报表",t:"毛利率计算",o:"计算器 (收入-成本)/收入。",
+ p:"算每行毛利率 =（收入 - 成本）/ 收入。",
+ r:"=(B2-C2)/B2"},
+{c:"财务报表",t:"净利率计算",o:"手算净利润率。",
+ p:"算净利率 = 净利润 / 营业收入。",
+ r:"=净利润/营业收入"},
+{c:"财务报表",t:"现金流量净额",o:"流入流出分别加总再减。",
+ p:"经营性现金流净额 = 经营活动现金流入 - 流出，写公式。",
+ r:"=SUM(流入区域)-SUM(流出区域)"},
+{c:"财务报表",t:"报表自动取数",o:"手工从明细表往报表模板里抄数。",
+ p:"从科目余额表自动取数填到资产负债表各项目，科目变了自动更新。",
+ r:"方法：=SUMIF(科目列,\"银行存款\",余额列)\n把报表项目改成 SUMIF 引用"},
+
+// ─── 预算预测 ───
+{c:"预算预测",t:"预算执行率",o:"手算花了预算的百分之几。",
+ p:"算各部门预算执行率，超 100% 提示超支。",
+ r:"=实际/预算\n超支提示 =IF(实际>预算,\"超支\",\"\")"},
+{c:"预算预测",t:"预算差异率",o:"实际与预算相减后，再除预算算偏差。",
+ p:"B列为预算金额、C列为实际金额，计算实际相对预算的差异率；预算为0或空白时给出明确提示。",
+ r:"=IF(B2=0,\"预算为0\",(C2-B2)/B2)",
+ n:"正数表示实际高于预算，负数表示低于预算；将数值结果设为百分比。若预算为负数或收入类预算，超预算方向须结合业务口径解释。"},
+{c:"预算预测",t:"滚动预测",o:"拍脑袋估下月费用。",
+ p:"用最近 3 个月实际费用的平均值预测下月费用。",
+ r:"=AVERAGE(最近3个月单元格)"},
+{c:"预算预测",t:"线性趋势预测",o:"画图再肉眼猜趋势。",
+ p:"用历史月度收入做线性趋势，预测下月收入。",
+ r:"=FORECAST.LINEAR(目标x值,已知y区域,已知x区域)"},
+{c:"预算预测",t:"盈亏平衡点",o:"手算保本销量。",
+ p:"算盈亏平衡销量 = 固定成本 / (单价 - 单位变动成本)。",
+ r:"=固定成本/(单价-单位变动成本)"},
+{c:"预算预测",t:"敏感性分析",o:"改一个数看结果，来回改几十次。",
+ p:"用模拟运算表做单价/销量变动对利润的敏感性分析。",
+ r:"方法：数据 → 模拟分析 → 模拟运算表\n行/列设为变动因素，引用利润公式"},
+
+// ─── 税务处理 ───
+{c:"税务处理",t:"价税分离",o:"含税价手算不含税价和税额。",
+ p:"含税价 11300 元、税率 13%，算不含税价和税额。",
+ r:"不含税 =含税价/(1+13%)\n税额 =含税价/(1+13%)*13%"},
+{c:"税务处理",t:"应纳增值税",o:"销项进项手减，漏了留抵。",
+ p:"算本期应纳增值税 = 销项税额 - 进项税额 - 上期留抵。",
+ r:"=销项税-进项税-留抵"},
+{c:"税务处理",t:"印花税计算",o:"按税率表手算。",
+ p:"购销合同印花税按合同金额 0.03% 计算。",
+ r:"=合同金额*0.03%\n（以当地最新规定为准）"},
+{c:"税务处理",t:"企业所得税估算",o:"手算所得税。",
+ p:"用会计利润、纳税调整项目和适用优惠测算当期企业所得税。请把一般税率与优惠资格判断分开，并列出前提、适用期间和需要核实的指标。",
+ r:"一般测算框架：应纳税所得额×适用税率-减免/抵免税额-已预缴税额\n应纳税所得额应由会计利润按税法口径调整后确定。",
+ n:"不要将会计利润直接等同应纳税所得额。小型微利企业等优惠需满足当期条件且政策有适用期限；优惠变化时更新参数并复核申报表。"},
+{c:"税务处理",t:"税负率监控",o:"手算税负率。",
+ p:"算增值税/企业所得税税负率，用于预警。",
+ r:"税负率 =实缴税额/营业收入"},
+
+// ─── 图表可视化 ───
+{c:"图表可视化",t:"月度收入趋势图",o:"选数据再点图表，样式丑还要调半天。",
+ p:"用月度收入数据做折线趋势图，标注同比增长。",
+ r:"方法：选中日期+收入 → 插入折线图\n加同比用组合图/次坐标"},
+{c:"图表可视化",t:"费用结构饼图",o:"手动拼饼图。",
+ p:"做各部门/各费用项目占比饼图，突出最大项。",
+ r:"方法：选中类别+金额 → 插入饼图 → 数据标签显示百分比"},
+{c:"图表可视化",t:"预算vs实际对比图",o:"手动画柱状对比。",
+ p:"做预算 vs 实际的柱状对比图，超支项标红。",
+ r:"方法：选中部门+预算+实际 → 插入簇状柱形图 → 超支项单独改填充色"},
+{c:"图表可视化",t:"关键指标仪表盘",o:"散落多个表，看数要来回切。",
+ p:"用数据透视表 + 切片器做财务关键指标仪表盘。",
+ r:"方法：数据透视表汇总 → 插入切片器（部门/月份）→ 加图表联动"},
+{c:"图表可视化",t:"条件格式高亮",o:"手工标色，数据一变就重标。",
+ p:"金额排名前10自动高亮、低于平均值标红。",
+ r:"方法：开始 → 条件格式 → 项目选取规则\n前10项 / 低于平均值，自动刷新"}
+
+];
+
+const grid = document.getElementById("grid");
+const catsEl = document.getElementById("cats");
+const hint = document.getElementById("hint");
+const search = document.getElementById("search");
+let curCat = "全部";
+let q = "";
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function render(){
+  const list = DATA.filter(d=>{
+    const okCat = curCat==="全部" || d.c===curCat;
+    const okQ = !q || (d.t+d.p+d.r+d.c+d.o).toLowerCase().includes(q.toLowerCase());
+    return okCat && okQ;
+  });
+  grid.innerHTML = list.map((d,i)=>{
+    const idx = DATA.indexOf(d)+1;
+    return `<div class="card">
+      <div class="card-head"><span class="num">${idx}</span><span class="tag">${esc(d.c)}</span></div>
+      <div class="card-title">${esc(d.t)}</div>
+      <div class="old-panel">
+        <div class="col-label old"><span class="ic old">旧</span>以前怎么手搓</div>
+        <div class="old-txt">${esc(d.o)}</div>
+      </div>
+      <div class="row">
+        <div class="col prompt-col">
+          <div class="col-label ai"><span class="ic ai">AI</span>AI 提示词</div>
+          <div class="prompt">${esc(d.p)}</div>
+        </div>
+        <div class="col result-col">
+          <div class="col-label ai"><span class="ic ai">算</span>公式 / 操作方法</div>
+          <div class="formula"><button class="copy" title="复制公式或方法">⧉</button>${esc(d.r)}</div>
+          ${d.n?`<div class="note">使用前核对：${esc(d.n)}</div>`:""}
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+  hint.textContent = `当前显示 ${list.length} / ${DATA.length} 条`;
+  document.querySelectorAll(".copy").forEach(b=>{
+    b.addEventListener("click",e=>{
+      const formula = e.target.closest(".formula").cloneNode(true);
+      formula.querySelectorAll(".lbl,.copy").forEach(el=>el.remove());
+      const code = formula.textContent.trim();
+      navigator.clipboard.writeText(code).then(()=>{
+        b.textContent="✓";b.classList.add("done");
+        setTimeout(()=>{b.textContent="⧉";b.classList.remove("done")},1200);
+      });
+    });
+  });
+}
+
+catsEl.innerHTML = ["全部",...CATS].map(c=>`<span class="cat ${c===curCat?'on':''}" data-c="${c}">${c}</span>`).join("");
+catsEl.querySelectorAll(".cat").forEach(el=>{
+  el.addEventListener("click",()=>{
+    curCat = el.dataset.c;
+    catsEl.querySelectorAll(".cat").forEach(x=>x.classList.toggle("on",x.dataset.c===curCat));
+    render();
+  });
+});
+search.addEventListener("input",e=>{q=e.target.value.trim();render()});
+
+render();
+</script>
+</body>
+</html>
